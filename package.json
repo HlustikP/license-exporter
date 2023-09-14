@@ -1,17 +1,19 @@
 {
-	"name": "@odit/license-exporter",
-	"version": "0.0.10",
+	"name": "@hlustikp/license-exporter",
+	"version": "0.1.0",
 	"description": "A simple license crawler for crediting open source work",
+	"type": "module",
 	"keywords": [
 		"license",
+		"crawler",
 		"ODIT.Services",
 		"cli"
 	],
 	"repository": {
 		"type": "git",
-		"url": "https://git.odit.services/odit/license-exporter"
+		"url": "https://github.com/HlustikP/license-exporter"
 	},
-	"author": "ODIT.Services",
+	"author": "Patrick Hlustik",
 	"license": "MIT",
 	"publishConfig": {
 		"access": "public"
@@ -30,7 +32,7 @@
 	],
 	"main": "exporter.js",
 	"bin": {
-		"license-exporter": "bin/exporter.js"
+		"license-exporter": "bin/exporter.mjs"
 	},
 	"files": [
 		"bin",
@@ -41,5 +43,9 @@
 	],
 	"dependencies": {
 		"yargs": "^16.2.0"
+	},
+	"devDependencies": {
+		"@types/node": "^18.17.0",
+		"@types/yargs": "^17.0.24"
 	}
 }

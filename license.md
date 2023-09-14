@@ -1,12 +1,10 @@
-# yargs
-**Author**: undefined
-**Repo**: [object Object]
-**License**: MIT
-**Description**: yargs the modern, pirate-themed, successor to optimist.
-## License Text
 MIT License
 
 Copyright 2010 James Halliday (mail@substack.net); Modified work Copyright 2014 Contributors (ben@npmjs.com)
+
+MIT License Copyright (c) 2020 ODIT.Services (info@odit.services)
+
+Copyright 2023 Patrick Hlustik (patrick.hlustik@googlemail.com)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -25,5 +23,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
- 
-

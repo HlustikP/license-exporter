@@ -1,17 +1,30 @@
-# ODIT.Services - License Exporter
+# License Exporter
 
-[![Build Status](https://ci.odit.services/api/badges/odit/license-exporter/status.svg?ref=refs/heads/main)](https://ci.odit.services/odit/license-exporter)
+This project is a fork of the original [ODIT.Services - License Exporter](https://git.odit.services/odit/license-exporter) created with the intention of expanding it
+with additional features that were missing in the original. While the core functionality remains the same,
+this fork aims to enhance the project by addressing specific needs and requirements such as selection which kind of
+dependencies are to be included (production, dev, etc.).
 
 A simple license exporter that crawls your package.json and provides you with information about your dependencies' licenses.
 You can export this information into json(even prettyfied) and markdown.
 We use this in our open source projects to credit the awesome work of other open source contributors.
 
 ## Install
-Via yarn/npm:
+Via your favorite package manager (npm, yarn, pnpm, whatever):
 ```bash
-yarn add @odit/license-exporter
-# Or
-npm i @odit/license-exporter
+pnpm i -g @HlustikP/license-exporter
+```
+Or as a local dev dependency:
+```bash
+pnpm i -D @HlustikP/license-exporter
+```
+
+## Build
+The project is written in typescript and `bun` was used to build it.
+To build the project, run:
+```bash
+bun build ./src/index.ts --outdir ./bin --target node --external yargs
+mv ./bin/index.js ./bin/exporter.mjs
 ```
 
 ## CLI Usage
@@ -23,13 +36,16 @@ Export only your dependencies to markdown: `licenseexporter --md`
 Export all dependencies to markdown: `licenseexporter --md --recursive`
 
 ## Options
-Arg | Description | Type | Default
-| - | - | - | -
-\-j, --json | Exports the license information into ./licenses.json as json. | flag/[boolean] | N/A
-\-p, --pretty | Prettify the json output.|flag/[boolean] | N/A
-\-m, --markdown | Exports the license information into ./licenses.md as markdown. | flag/[boolean] | N/A
-\-r, --recursive | Include all of the dependencies' subdependencies. | flag/[boolean] | N/A
-\-o, --output | Output folder for the exports. | [string] | Current folder
-\-i, --input | Path to the input folder containing your package.json and node_modules | [string] | Current folder
-\-h, --help | Show help | flag/[boolean] | N/A
-\-v, --version | Show version number | flag/[boolean] | N/A
+| Arg                   | Description                                                                     | Type           | Default        |
+|-----------------------|---------------------------------------------------------------------------------|----------------|----------------|
+| \-j, --json           | Exports the license information into ./licenses.json as json.                   | flag/[boolean] | N/A            |
+| \-p, --pretty         | Prettify the json output.                                                       | flag/[boolean] | N/A            |
+| \-m, --markdown       | Exports the license information into ./licenses.md as markdown.                 | flag/[boolean] | N/A            |
+| \-r, --recursive      | Include all of the dependencies' sub-dependencies.                              | flag/[boolean] | N/A            |
+| \--prod, --production | Crawl production dependencies (`dependencies` section in `package.json`).       | flag/[boolean] | true           |
+| \-d, --dev            | Crawl dev dependencies (`devDependencies` section in `package.json`).           | flag/[boolean] | false          |
+| \--opt, --optional    | Crawl optional dependencies (`optionalDependencies` section in `package.json`). | flag/[boolean] | false          |
+| \-o, --output         | Output folder for the exports.                                                  | [string]       | Current folder |
+| \-i, --input          | Path to the input folder containing your package.json and node_modules          | [string]       | Current folder |
+| \-h, --help           | Show help                                                                       | flag/[boolean] | N/A            |
+| \-v, --version        | Show version number                                                             | flag/[boolean] | N/A            |
