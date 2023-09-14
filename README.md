@@ -35,6 +35,8 @@ Export all dependencies to json: `licenseexporter --json --recursive`
 Export only your dependencies to markdown: `licenseexporter --md`
 Export all dependencies to markdown: `licenseexporter --md --recursive`
 
+Note: Use `npx licenseexporter` if you install it as a local dev dependency.
+
 ## Options
 | Arg                   | Description                                                                     | Type           | Default        |
 |-----------------------|---------------------------------------------------------------------------------|----------------|----------------|

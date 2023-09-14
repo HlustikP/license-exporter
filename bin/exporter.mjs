@@ -5,43 +5,75 @@ import {appendFileSync, existsSync, readFileSync, writeFileSync} from "node:fs";
 import yargs from "yargs";
 var parsePackageInfo = function(path) {
   const packagecontents = JSON.parse(readFileSync(path, { encoding: "utf-8" }));
-  packagecontents.dependencies = Object.entries(packagecontents.dependencies || {});
-  packagecontents.devDependencies = Object.entries(packagecontents.devDependencies || {});
-  packagecontents.optionalDependencies = Object.entries(packagecontents.optionalDependencies || {});
+  packagecontents.dependencies = args["production"] ? Object.entries(packagecontents.dependencies || {}) : [];
+  packagecontents.devDependencies = args["dev"] ? Object.entries(packagecontents.devDependencies || {}) : [];
+  packagecontents.optionalDependencies = args["optional"] ? Object.entries(packagecontents.optionalDependencies || {}) : [];
   return packagecontents;
 };
 var mergeDependencies = function(packageInfo) {
   return [].concat(packageInfo.dependencies, packageInfo.devDependencies, packageInfo.optionalDependencies);
 };
-var getDependencyLicenseInfo = function(all_dependencies, recursive) {
-  let all = [];
-  all_dependencies.forEach((p) => {
-    const packageinfo = parsePackageInfo(`${args["input"]}/node_modules/${p[0]}/package.json`);
+var getDependencyLicenseInfo = function(initialDependencies, recursive) {
+  const all = [];
+  const stack = initialDependencies;
+  const processedDependencies = new Set;
+  while (stack.length > 0) {
+    const currentPackage = stack.pop();
+    const packageName = currentPackage[0];
+    if (processedDependencies.has(packageName)) {
+      continue;
+    }
+    const packageInfo = parsePackageInfo(`${args["input"]}/node_modules/${currentPackage[0]}/package.json`);
     let licensetext = "";
-    if (existsSync(`${args["input"]}/node_modules/${p[0]}/LICENSE.md`)) {
-      licensetext = readFileSync(`${args["input"]}/node_modules/${p[0]}/LICENSE.md`, { encoding: "utf-8" });
-    }
-    if (existsSync(`${args["input"]}/node_modules/${p[0]}/LICENSE`)) {
-      licensetext = readFileSync(`${args["input"]}/node_modules/${p[0]}/LICENSE`, { encoding: "utf-8" });
-    }
-    if (existsSync(`${args["input"]}/node_modules/${p[0]}/LICENSE.txt`)) {
-      licensetext = readFileSync(`${args["input"]}/node_modules/${p[0]}/LICENSE.txt`, { encoding: "utf-8" });
+    if (existsSync(`${args["input"]}/node_modules/${currentPackage[0]}/LICENSE.md`)) {
+      licensetext = readFileSync(`${args["input"]}/node_modules/${currentPackage[0]}/LICENSE.md`, { encoding: "utf-8" });
+    } else if (existsSync(`${args["input"]}/node_modules/${currentPackage[0]}/LICENSE`)) {
+      licensetext = readFileSync(`${args["input"]}/node_modules/${currentPackage[0]}/LICENSE`, { encoding: "utf-8" });
+    } else if (existsSync(`${args["input"]}/node_modules/${currentPackage[0]}/LICENSE.txt`)) {
+      licensetext = readFileSync(`${args["input"]}/node_modules/${currentPackage[0]}/LICENSE.txt`, { encoding: "utf-8" });
     }
     const info = {
-      author: packageinfo.author,
-      repository: packageinfo.repository || packageinfo.repository?.url,
-      description: packageinfo.description,
-      name: packageinfo.name,
-      license: packageinfo.license,
-      version: packageinfo.version,
+      author: packageInfo.author ?? "Unspecified",
+      repository: (packageInfo.repository || packageInfo.repository?.url) ?? "",
+      description: packageInfo.description ?? "Unspecified",
+      name: packageInfo.name ?? "Unspecified",
+      license: packageInfo.license ?? "Unspecified",
+      version: packageInfo.version ?? "Unspecified",
       licensetext
     };
     all.push(info);
     if (recursive === true) {
-      all.push(...getDependencyLicenseInfo(packageinfo.dependencies, true));
+      const dependencies = mergeDependencies(packageInfo);
+      processedDependencies.add(packageName);
+      const newDependencies = dependencies.filter((dep) => !processedDependencies.has(dep[0]));
+      stack.push(...newDependencies);
     }
-  });
+  }
   return all;
+};
+var extractAuthor = function(author) {
+  if (typeof author === "string") {
+    return author;
+  }
+  if (author.name) {
+    return author.name;
+  }
+  if (author.url) {
+    return author.url;
+  }
+  if (author.email) {
+    return author.email;
+  }
+  return "";
+};
+var extractRepository = function(repository) {
+  if (typeof repository === "string") {
+    return repository;
+  }
+  if (repository.url) {
+    return repository.url;
+  }
+  return "";
 };
 var args = yargs(process.argv.slice(2)).option("json", {
   alias: "j",
@@ -80,13 +112,14 @@ var args = yargs(process.argv.slice(2)).option("json", {
   type: "boolean",
   default: false
 }).option("optional", {
-  alias: "o",
+  alias: "opt",
   describe: "Include optionalDependencies.",
   type: "boolean",
   default: false
 }).help().alias("help", "h").alias("v", "version").argv;
 var packageInfo = parsePackageInfo(`${args["input"]}/package.json`);
-var all = getDependencyLicenseInfo(mergeDependencies(packageInfo), args["recursive"]);
+var initialDependencies = mergeDependencies(packageInfo);
+var all = getDependencyLicenseInfo(initialDependencies, args["recursive"]);
 if (args["json"]) {
   if (args["pretty"]) {
     writeFileSync(args["output"] + "/licenses.json", JSON.stringify(all, null, 4));
@@ -97,7 +130,7 @@ if (args["json"]) {
 if (args["markdown"]) {
   writeFileSync(args["output"] + "/licenses.md", "");
   all.forEach((p) => {
-    appendFileSync(args["output"] + "/licenses.md", `# ${p.name}\n**Author**: ${p.author}\n**Repo**: ${p.repository || p.repository?.url}\n**License**: ${p.license}\n**Description**: ${p.description}\n## License Text\n${p.licensetext} \n\n`);
+    appendFileSync(args["output"] + "/licenses.md", `# ${p.name}\n**Author**: ${extractAuthor(p.author)}\n**Repo**: ${extractRepository(p.repository)}\n**Description**: ${p.description}\n## License Text\n${p.licensetext} \n\n`);
   });
 } else {
   console.log(all);
