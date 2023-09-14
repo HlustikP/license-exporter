@@ -1,6 +1,6 @@
 {
 	"name": "@hlustikp/license-exporter",
-	"version": "0.2.0",
+	"version": "0.2.1",
 	"description": "A simple license crawler for crediting open source work",
 	"type": "module",
 	"keywords": [

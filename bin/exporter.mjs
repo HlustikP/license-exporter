@@ -23,6 +23,9 @@ var getDependencyLicenseInfo = function(initialDependencies, recursive) {
     if (processedDependencies.has(packageName)) {
       continue;
     }
+    if (!existsSync(`${args["input"]}/node_modules/${currentPackage[0]}/package.json`)) {
+      continue;
+    }
     const packageInfo = parsePackageInfo(`${args["input"]}/node_modules/${currentPackage[0]}/package.json`);
     let licensetext = "";
     if (existsSync(`${args["input"]}/node_modules/${currentPackage[0]}/LICENSE.md`)) {

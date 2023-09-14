@@ -103,6 +103,10 @@ function getDependencyLicenseInfo(
             continue;
         }
 
+        if (!existsSync(`${args["input"]}/node_modules/${currentPackage[0]}/package.json`)) {
+            continue;
+        }
+
         const packageInfo = parsePackageInfo(
             `${args["input"]}/node_modules/${currentPackage[0]}/package.json`
         );
