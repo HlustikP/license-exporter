@@ -29,12 +29,14 @@ mv ./bin/index.js ./bin/exporter.mjs
 ## CLI Usage
 
 Export only your direct dependencies to json: `license-exporter --json`
+
 Export all dependencies to json: `license-exporter --json --recursive`
 
 Export only your direct dependencies to markdown: `license-exporter -m`
+
 Export all dependencies to markdown: `license-exporter -m --recursive`
 
-Note: Use `npx license-exporter` if you install it as a local dev dependency.
+**Note: Use `npx license-exporter` if you install it as a local dev dependency.**
 
 ## Options
 | Arg                   | Description                                                                     | Type           | Default        |
