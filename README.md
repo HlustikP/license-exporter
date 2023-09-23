@@ -7,16 +7,15 @@ dependencies are to be included (production, dev, etc.).
 
 A simple license exporter that crawls your package.json and provides you with information about your dependencies' licenses.
 You can export this information into json(even prettyfied) and markdown.
-We use this in our open source projects to credit the awesome work of other open source contributors.
 
 ## Install
 Via your favorite package manager (npm, yarn, pnpm, whatever):
 ```bash
-pnpm i -g @HlustikP/license-exporter
+pnpm i -g @hlustikp/license-exporter
 ```
 Or as a local dev dependency:
 ```bash
-pnpm i -D @HlustikP/license-exporter
+pnpm i -D @hlustikp/license-exporter
 ```
 
 ## Build
@@ -29,13 +28,13 @@ mv ./bin/index.js ./bin/exporter.mjs
 
 ## CLI Usage
 
-Export only your dependencies to json: `licenseexporter --json`
-Export all dependencies to json: `licenseexporter --json --recursive`
+Export only your direct dependencies to json: `license-exporter --json`
+Export all dependencies to json: `license-exporter --json --recursive`
 
-Export only your dependencies to markdown: `licenseexporter --md`
-Export all dependencies to markdown: `licenseexporter --md --recursive`
+Export only your direct dependencies to markdown: `license-exporter -m`
+Export all dependencies to markdown: `license-exporter -m --recursive`
 
-Note: Use `npx licenseexporter` if you install it as a local dev dependency.
+Note: Use `npx license-exporter` if you install it as a local dev dependency.
 
 ## Options
 | Arg                   | Description                                                                     | Type           | Default        |
